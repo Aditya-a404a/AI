@@ -26,6 +26,7 @@ export async function POST(req) {
             'Content-Type': 'application/json',
           },
       });
+    try { 
     const b = await response.json()
     console.log(b.content)
     const s = extractTextWithSpaces(b.content)
@@ -41,4 +42,8 @@ export async function POST(req) {
     return new Response(JSON.stringify({ message: completion.choices[0].message.content }), {
         status: 201,
       });
+    }
+    catch{
+        return new Response(JSON.stringify({message: "transcript because GPT LIMIT REACHED" `${s}` }))
+    }
 }
