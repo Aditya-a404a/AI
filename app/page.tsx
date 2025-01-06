@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Youtube, FileText, Zap } from 'lucide-react';
-
+import { findUserByEmail } from './actions';
 export default function Home() {
+  findUserByEmail("adityaArora@gmail.com");
   return (
     <div className="flex flex-col min-h-screen">
       <header className="border-b">
@@ -16,7 +17,7 @@ export default function Home() {
               <Button variant="ghost">Login</Button>
             </Link>
             <Link href="/signup">
-              <Button>Sign Up</Button>
+              <Button>Sign Up </Button>
             </Link>
           </div>
         </nav>

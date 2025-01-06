@@ -7,16 +7,25 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Youtube, History, LogOut } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import  useTypingEffect  from "@/app/utils/typing"
+import  useAuth  from "@/app/hooks/useAuth"
 export default function DashboardPage() {
+  useAuth();
   const [videoUrl, setVideoUrl] = useState("");
   const [summary, setSummary] = useState("");
-  
+  const [transcript, setTranscript] = useState(null);
+  const [error, setError] = useState(null);
+  const handleSubmit = async (e) => {
 
-  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add video processing logic here
-    setSummary("Summary will appear here...");
-    
+    console.log("called submit")
+    const response = await fetch('/api/transcript', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body : JSON.stringify({videoUrl})
+    });
+    const body = await response.json()
+    setSummary(body.message)
+    console.log("Done")
 
   };
   
@@ -47,7 +56,7 @@ export default function DashboardPage() {
                 <div className="flex gap-4">
                   <Input
                     type="url"
-                    placeholder="Paste YouTube video URL"
+                    placeholder="https://www.youtube.com/watch?v="
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
                     required
@@ -62,9 +71,7 @@ export default function DashboardPage() {
             <Card>
               <CardContent className="pt-6">
                 <h3 className="text-lg font-semibold mb-4">Summary</h3>
-                <textarea>
-                
-                </textarea>
+                {summary}
                 
               </CardContent>
             </Card>

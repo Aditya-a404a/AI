@@ -7,12 +7,28 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Youtube } from "lucide-react";
 
+
+
 export default function LoginPage() {
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const body = await response.json()
+    
+    const token = body.token
+    if (token) {
+      localStorage.setItem('token',token);
+      window.location.href = '/dashboard';
+    } 
+  
     // Add authentication logic here
   };
 
@@ -28,7 +44,7 @@ export default function LoginPage() {
             Enter your email to sign in to your account
           </p>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} >
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Input
