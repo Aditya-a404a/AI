@@ -34,7 +34,7 @@ export async function POST(req) {
         messages: [
           {
             "role": "user",
-            "content": `Summarise this very nicely ${s}`
+            "content": `Summarise this so that i can feel what the video was about saving me time and getting the essence of video  ${s}`
           }
         ] 
       })
