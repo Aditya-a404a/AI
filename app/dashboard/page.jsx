@@ -8,25 +8,41 @@ import { Youtube, History, LogOut } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import  useTypingEffect  from "@/app/utils/typing"
 import  useAuth  from "@/app/hooks/useAuth"
+function extractContent(jsonString) {
+  // Parse the JSON string
+  const parsedData = JSON.parse(jsonString);
+  
+  // Navigate to the content part
+  const content = parsedData[0].choices[0].message.content;
+  
+  return content;
+}
 export default function DashboardPage() {
   useAuth();
   const [videoUrl, setVideoUrl] = useState("");
   const [summary, setSummary] = useState("");
   const [transcript, setTranscript] = useState(null);
   const [error, setError] = useState(null);
+
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-    console.log("called submit")
-    const response = await fetch('/api/transcript', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body : JSON.stringify({videoUrl})
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Basic YWRpdHlhOmNsYXNo")
+    
+    const raw = JSON.stringify({
+      "link": `${videoUrl}`
     });
-    const body = await response.json()
-    setSummary(body.message)
-    console.log("Done")
-
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+    fetch("https://n8n-dev.subspace.money/webhook/15da8db6-5f58-4d38-baf7-024b2b82ec99", requestOptions)
+    .then((response) => response.text())
+    .then((result) => setSummary(extractContent(result)))
+    .catch((error) => console.error(error));
   };
   
   return (

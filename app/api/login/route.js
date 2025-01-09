@@ -30,6 +30,7 @@ export  async function POST(req) {
       });
     }
     const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+   
     return new Response(JSON.stringify({ token: token }), {
       status: 201,
       headers: {

@@ -19,31 +19,25 @@ function extractTextWithSpaces(content) {
 export async function POST(req) {
     const body =  await req.json()
     console.log(body)
-    const response = await fetch(`https://api.supadata.ai/v1/youtube/transcript?url=${body.videoUrl}`, {
-        method: 'GET',
-        headers: {
-            'x-api-key': process.env.SUPADATA,
-            'Content-Type': 'application/json',
-          },
-      });
-    try { 
-    const b = await response.json()
-    console.log(b.content)
-    const s = extractTextWithSpaces(b.content)
-    const completion = await openai.chat.completions.create({
-        model: "openai/gpt-3.5-turbo",
-        messages: [
-          {
-            "role": "user",
-            "content": `Summarise this so that i can feel what the video was about saving me time and getting the essence of video  ${s}`
-          }
-        ] 
-      })
-    return new Response(JSON.stringify({ message: completion.choices[0].message.content }), {
-        status: 201,
-      });
+    
+    const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify({
+  "link": `${body.videoUrl}`
+});
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+fetch("https://n8n-dev.subspace.money/webhook/15da8db6-5f58-4d38-baf7-024b2b82ec99", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+  return new Response(JSON.stringify({ message: 'User created successfully' }), {
+    status: 201,
+  });
     }
-    catch{
-        return new Response(JSON.stringify({message: "transcript because GPT LIMIT REACHED" `${s}` }))
-    }
-}
+    
